@@ -1,0 +1,60 @@
+{
+	"users": [
+		{
+			"id": 1,
+			"name": "Семен",
+			"lastName": "Семенов",
+			"email": "semen.test@example.com",
+			"password": "$2a$10$xcw5tuCv36R8g13wjR3./.Z99by5Z6i8zHk1hbVXiEn83d6fGMXU6",
+			"contacts": [
+				{
+					"name": "Вася",
+					"lastName": "Васильев",
+					"email": "vas.test@example.com",
+					"id": 123,
+					"tel": "+7-999-000-00-00"
+				},
+				{
+					"name": "Сергей",
+					"lastName": "Сергеев",
+					"email": "ssr.test@example.com",
+					"id": 124,
+					"tel": "+7-999-000-00-01"
+				},
+				{
+					"name": "Андрей",
+					"lastName": "Андреев",
+					"email": "and.test@example.com",
+					"id": 125,
+					"tel": "+7-999-000-00-02"
+				},
+				{
+					"name": "Стас",
+					"lastName": "Петров",
+					"email": "pet.test@example.com",
+					"id": 126,
+					"tel": "+7-999-000-00-03"
+				},
+				{
+					"name": "Кот",
+					"lastName": "",
+					"email": "cat.test@example.com",
+					"id": 127,
+					"tel": "+7-999-000-00-04"
+				},
+				{
+					"name": "Тина",
+					"lastName": "Росси",
+					"email": "ros.test@example.com",
+					"id": 128,
+					"tel": "+7-999-000-00-05"
+				}
+			]
+		},
+		{
+			"email": "sdsdd@ssfsf.gf",
+			"password": "$2a$10$xcw5tuCv36R8g13wjR3./.Z99by5Z6i8zHk1hbVXiEn83d6fGMXU6",
+			"id": 2
+		}
+	]
+}
