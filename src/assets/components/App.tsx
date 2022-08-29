@@ -3,7 +3,7 @@ import { useSelector } from "react-redux"
 import { Route, Routes } from "react-router-dom"
 import { Layout } from "./Layout"
 import { ContactsPage } from "./pages/ContactsPage"
-import { Login } from "./pages/Login"
+import { Login } from "./pages/loginPage/Login"
 
 export const App:React.FC = () => {
 

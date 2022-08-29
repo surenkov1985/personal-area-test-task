@@ -1,14 +1,12 @@
 
 import * as React from "react"
-import { useEffect } from "react"
+import { useEffect, useState } from "react"
 import styled from "styled-components"
 import { useAppDispatch, useAppSelector } from "../../stores/hooks"
-import * as uniqid from "uniqid"
 import {IoSearchOutline} from "react-icons/io5"
-import {Login} from "./Login"
 import { useNavigate } from "react-router-dom"
-import { authUser } from "../../stores/loginReducer"
-import { useGetDataQuery } from "../../stores/apiData"
+import { authUser, modalToggle, updateUser } from "../../stores/loginReducer"
+import { AddContact } from "../addContact"
 
 const Content = styled.div`
     width: 100%;
@@ -60,9 +58,6 @@ const LabelEl = styled.label`
     height: 40px;
     padding: 0 10px;
 `
-export  interface IContactProps {
-    login: boolean
-}
 
 const ContactList = styled.ul`
     display: flex;
@@ -81,71 +76,96 @@ const ContactItem = styled.li`
     align-items: center;
     column-gap: 10px;
 `
+export  interface IContactProps {
+    login: boolean
+}
 interface IContactsType {
     name: string,
     id:string,
-    tel: string
+    tel: string,
+    email: string,
+    lastName: string
 }
 
 export const ContactsPage:React.FC = () => {
 
     const dispatch = useAppDispatch()
     let userData = useAppSelector(state => state.login.user)
+    let contacts = useAppSelector(state => state.login.data)
+    let modal = useAppSelector(state => state.login.modal)
     const navigate = useNavigate()
-    const {data} = useGetDataQuery(userData?.user?.email)
-    console.log(data);
+    const [deletedElem, setDeletedElem] = useState<IContactsType>()
+    
+    console.log(userData, contacts);
+    function getContacts() {
+        fetch("http://localhost:3001/users/1")
+            .then(res => res.json())
+            .then(data => {
+                dispatch(updateUser(data.contacts))
+                console.log(data);
+            })
+            .catch(err => console.log(err))
+    }
 
+    function setContactsApi(data) {
+        fetch("http://localhost:3001/users/1", {
+            method: "PATCH",
+            headers: {
+                "Content-Type": "application/json"
+            },
+            body: JSON.stringify({contacts: data})
+        })
+    }
+    
     useEffect(() => {
         dispatch(authUser(JSON.parse(localStorage.getItem("user"))))
+        getContacts()
     }, [])
-    
+
+    useEffect(() => {
+        contacts && setContactsApi(contacts)
+    }, [contacts])
+
     if (!userData) {
         navigate("/login")
     }
 
-    const contacts:IContactsType[] = [
-        {
-            name:"Вася",
-            id: uniqid(),
-            tel: "+7-999-000-00-00"
-        }, 
-        {
-            name: "Сергей",
-            id: uniqid(),
-            tel: "+7-999-000-00-01"
-        }, 
-        {
-            name: "Алена",
-            id: uniqid(),
-            tel: "+7-999-000-00-02"
-        }
-    ]
-
+    function deleteHandler():void {
+        
+        deletedElem && dispatch(updateUser(contacts.filter(el => el?.id !== deletedElem.id)))
+    }
+    function checkHandler(e, elem) {
+        setDeletedElem(e.target.checked ? elem : {})
+    }
     if (userData) {return (
             <Content>
+                
                 <ContentControl>
                     <Title>Контакты</Title>
-                    <ButtonEl>Добавить</ButtonEl>
-                    <ButtonEl>Удалить</ButtonEl>
+                    <ButtonEl onClick={e => {dispatch(modalToggle(true))}}>Добавить</ButtonEl>
+                    <ButtonEl onClick={deleteHandler}>Удалить</ButtonEl>
                     <LabelEl>
                         <IoSearchOutline size={20}/>
                         <input type="text" placeholder="Поиск" style={{marginLeft: "10px"}}/>
                     </LabelEl>
                 </ContentControl>
+                {modal && <AddContact/>}
                 <ContactList>
-                    {contacts.map((cont) => {
+                    {contacts?.map((cont) => {
                         return (
                             <ContactItem key={cont.id}>
                                 <label>
                                     <span></span>
-                                    <input type="checkbox" />
+                                    <input type="checkbox" onClick={e => {checkHandler(e, cont)}}/>
                                 </label>
-                                <div>{cont.name}</div>
-                                <div>{cont.tel}</div>
+                                <div>{cont.name} {cont?.lastName}</div>
+                                <div>{cont?.email}</div>
                             </ContactItem>
                         )
                     })}
+                    
                 </ContactList>
+                
             </Content>
         )}
 
